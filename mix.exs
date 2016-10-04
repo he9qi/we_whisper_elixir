@@ -30,8 +30,9 @@ defmodule WeWhisper.Mixfile do
   defp deps do
     [ {:secure_random, "~> 0.5"},
       {:mock, "~> 0.1.1", only: :test},
-      {:earmark, "~>0.1", only: :dev},
-      {:ex_doc, "~>0.1", only: :dev}]
+      {:excoveralls, "~> 0.5", only: :test}, 
+      {:earmark, "~>1.0", only: :dev},
+      {:ex_doc, "~>0.14", only: :dev}]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
