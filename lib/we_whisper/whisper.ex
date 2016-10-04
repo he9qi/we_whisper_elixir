@@ -36,7 +36,7 @@ defmodule WeWhisper.Whisper do
   @doc """
   Decrypts message
   """
-  @spec decrypt_message(t, binary, binary, binary) :: binary
+  @spec decrypt_message(t, appid, token, encoding_aes_key) :: {:ok, binary} | {:error, Error}
   def decrypt_message(%WeWhisper.Whisper{appid: appid, token: token, encoding_aes_key: encoding_aes_key}, message, nonce \\ "", timestamp \\ "") do
     encrypted_text = Message.get_encrypted_content(message)
     signature = Message.get_signature(message)
@@ -54,18 +54,13 @@ defmodule WeWhisper.Whisper do
   end
 
   @doc """
-  Decrypts message
+  Encrypt message
   """
   @spec encrypt_message(t, binary, binary, binary) :: binary
   def encrypt_message(%WeWhisper.Whisper{appid: appid, token: token, encoding_aes_key: encoding_aes_key}, message, nonce, timestamp) do
-    # 1. Encrypt and encode the xml message
     encrypt = Cryptor.encrypt(message, appid, encoding_aes_key)
-
-    # 2. Create signature
     sign = Signature.sign(token, timestamp, nonce, encrypt)
-
-      # 3. Construct xml
     Message.to_xml(encrypt, sign, timestamp, nonce)
   end
-  
+
 end

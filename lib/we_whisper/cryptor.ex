@@ -22,6 +22,11 @@ defmodule WeWhisper.Cryptor do
     {appid, msg}
   end
 
+  @doc """
+  Encrypt message using encoded AES key and appid
+  Returns encrypted message
+  """
+  @spec encrypt(binary, binary, binary) :: binary
   def encrypt(message, appid, encoding_aes_key) do
     message
       |> pack_with_appid(appid)
