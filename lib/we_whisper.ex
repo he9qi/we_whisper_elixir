@@ -1,0 +1,2 @@
+defmodule WeWhisper do
+end
