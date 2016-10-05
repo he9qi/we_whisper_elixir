@@ -12,12 +12,7 @@ defmodule WeWhisper.Signature do
   """
   @spec sign(t) :: binary
   def sign(%{token: token, timestamp: timestamp, nonce: nonce, encrypted: encrypted}) do
-    [token, timestamp, nonce, encrypted]
-      |> Enum.reject(&(&1 == nil))
-      |> Enum.map(&("#{&1}"))
-      |> Enum.sort
-      |> Enum.join
-      |> encrypt
+    sign(token, timestamp, nonce, encrypted)
   end
 
   @doc """
