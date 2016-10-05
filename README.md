@@ -33,21 +33,21 @@
 
 ## Usage
 
-  #### Create whisper
+#### Create whisper
 
-  ```elixir
-  whisper = WeWhisper.Whisper.new appid, token, encoding_aes_key
-  ```
+```elixir
+whisper = WeWhisper.Whisper.new appid, token, encoding_aes_key
+```
 
-  #### Decrypt message
+#### Decrypt message
 
-  ```elixir
-  whisper |> decrypt_message(encrypted_message, nonce, timestamp)
-  ```
+```elixir
+{appid, message} = whisper |> decrypt_message(encrypted_message, nonce, timestamp)
+```
 
 
-  #### Encrypt message
+#### Encrypt message
 
-  ```elixir
-  whisper |> encrypt_message(message, nonce, timestamp)
-  ```
+```elixir
+encrypted_message = whisper |> encrypt_message(message, nonce, timestamp)
+```
