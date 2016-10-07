@@ -42,7 +42,7 @@ whisper = WeWhisper.Whisper.new appid, token, encoding_aes_key
 #### Decrypt message
 
 ```elixir
-{appid, message} = whisper |> decrypt_message(encrypted_message, nonce, timestamp)
+{:ok, decrypted_message} = whisper |> decrypt_message(encrypted_message, nonce, timestamp)
 ```
 
 
