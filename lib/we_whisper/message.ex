@@ -1,4 +1,6 @@
 defmodule WeWhisper.Message do
+  alias WeWhisper.Error
+
   require Record
   Record.defrecord :xmlElement, Record.extract(:xmlElement, from_lib: "xmerl/include/xmerl.hrl")
   Record.defrecord :xmlText, Record.extract(:xmlText, from_lib: "xmerl/include/xmerl.hrl")
@@ -15,7 +17,7 @@ defmodule WeWhisper.Message do
   @doc """
   Parse xml to message
   """
-  @spec parse(binary) :: t
+  @spec parse(binary) :: {:ok, t} | {:error, Error.t}
   def parse(message) do
     try do
       {:ok,
@@ -27,7 +29,7 @@ defmodule WeWhisper.Message do
         }
       }
     rescue
-      e in WeWhisper.Error -> {:error, e.reason}
+      e in Error -> {:error, e}
     end
   end
 
@@ -70,7 +72,7 @@ defmodule WeWhisper.Message do
       [ text ] = xmlElement(element, :content)
       xmlText(text, :value) |> to_string
     catch
-      :exit, _ -> raise WeWhisper.Error, reason: "failed to parse xml"
+      :exit, _ -> raise Error, reason: "failed to parse xml"
     end
   end
 end
