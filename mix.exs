@@ -1,7 +1,7 @@
 defmodule WeWhisper.Mixfile do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
 
   def project do
     [app: :we_whisper,
@@ -30,7 +30,7 @@ defmodule WeWhisper.Mixfile do
   defp deps do
     [ {:secure_random, "~> 0.5"},
       {:mock, "~> 0.1.1", only: :test},
-      {:excoveralls, "~> 0.5", only: :test}, 
+      {:excoveralls, "~> 0.5", only: :test},
       {:earmark, "~>1.0", only: :dev},
       {:ex_doc, "~>0.14", only: :dev}]
   end
