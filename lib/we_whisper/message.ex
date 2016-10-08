@@ -3,7 +3,7 @@ defmodule WeWhisper.Message do
   Record.defrecord :xmlElement, Record.extract(:xmlElement, from_lib: "xmerl/include/xmerl.hrl")
   Record.defrecord :xmlText, Record.extract(:xmlText, from_lib: "xmerl/include/xmerl.hrl")
 
-  @type t :: %{
+  @type t :: %__MODULE__{
     Encrypt: binary,
     MsgSignature: binary,
     TimeStamp: binary,
@@ -15,13 +15,20 @@ defmodule WeWhisper.Message do
   @doc """
   Parse xml to message
   """
+  @spec parse(binary) :: t
   def parse(message) do
-    %__MODULE__{
-      Encrypt:      get_value_of_key(message, "Encrypt"),
-      MsgSignature: get_value_of_key(message, "MsgSignature"),
-      TimeStamp:    get_value_of_key(message, "TimeStamp"),
-      Nonce:        get_value_of_key(message, "Nonce")
-    }
+    try do
+      {:ok,
+        %__MODULE__{
+          Encrypt:      get_value_of_key(message, "Encrypt"),
+          MsgSignature: get_value_of_key(message, "MsgSignature"),
+          TimeStamp:    get_value_of_key(message, "TimeStamp"),
+          Nonce:        get_value_of_key(message, "Nonce")
+        }
+      }
+    rescue
+      e in WeWhisper.Error -> {:error, e.reason}
+    end
   end
 
   @doc """
@@ -57,9 +64,13 @@ defmodule WeWhisper.Message do
   end
 
   defp get_value_of_key(xml, key) when is_binary(xml) do
-    { xml, _rest } = :xmerl_scan.string(:erlang.bitstring_to_list(xml))
-    [ element ] = :xmerl_xpath.string(to_char_list("/xml/#{key}"), xml)
-    [ text ] = xmlElement(element, :content)
-    xmlText(text, :value) |> to_string
+    try do
+      { xml, _rest } = :xmerl_scan.string(:erlang.bitstring_to_list(xml))
+      [ element ] = :xmerl_xpath.string(to_char_list("/xml/#{key}"), xml)
+      [ text ] = xmlElement(element, :content)
+      xmlText(text, :value) |> to_string
+    catch
+      :exit, _ -> raise WeWhisper.Error, reason: "failed to parse xml"
+    end
   end
 end
