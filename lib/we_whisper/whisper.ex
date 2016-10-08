@@ -36,10 +36,15 @@ defmodule WeWhisper.Whisper do
   @doc """
   Decrypts message
   """
-  @spec decrypt_message(t, appid, token, encoding_aes_key) :: {:ok, binary} | {:error, Error}
-  def decrypt_message(%WeWhisper.Whisper{appid: appid, token: token, encoding_aes_key: encoding_aes_key}, message, nonce \\ "", timestamp \\ "") do
-    encrypted_text = Message.get_encrypted_content(message)
-    signature = Message.get_signature(message)
+  @spec decrypt_message(t, binary) :: {:ok, binary} | {:error, Error}
+  def decrypt_message(%WeWhisper.Whisper{appid: appid, token: token, encoding_aes_key: encoding_aes_key}, xml_message) do
+    %Message{
+      Encrypt: encrypted_text,
+      MsgSignature: signature,
+      TimeStamp: timestamp,
+      Nonce: nonce
+    } = xml_message |> Message.parse
+
     sign = Signature.sign(token, timestamp, nonce, encrypted_text)
 
     case sign != signature do
