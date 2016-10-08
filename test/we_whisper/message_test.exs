@@ -34,6 +34,7 @@ defmodule WeWhisper.MessageTest do
   end
 
   test "parses invalid xml message" do
-    assert {:error, "failed to parse xml"} == parse("invalid_xml")
+    assert {:error, %WeWhisper.Error{reason: "failed to parse xml"}} ==
+      parse("invalid_xml")
   end
 end
