@@ -3,7 +3,7 @@ defmodule WeWhisper.CryptorTest do
 
   import WeWhisper.Cryptor
   import Mock
-  
+
   def timestamp, do: "1415979516"
   def nonce, do: "1320562132"
   def signature, do: "096d8cda45e4678ca23460f6b8cd281b3faf1fc3"
@@ -24,5 +24,13 @@ defmodule WeWhisper.CryptorTest do
       encrypted_message = encrypt(message, appid, encoding_aes_key)
       assert encrypted_message == encrypted
     end
+  end
+
+  test "double" do
+    encrypted = encrypt(message, appid, encoding_aes_key)
+    {decrypted_appid, decrypted_message}  = decrypt(encrypted, encoding_aes_key)
+
+    assert decrypted_message == message
+    assert decrypted_appid == appid
   end
 end

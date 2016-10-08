@@ -70,7 +70,7 @@ defmodule WeWhisper.Cryptor do
   end
 
   defp pack_with_appid(message, appid) do
-    random = SecureRandom.base64(8)
+    random = SecureRandom.base64(12)
     msg_len = <<String.length(message) :: size(32)>>
     random <> msg_len <> message <> appid
   end
