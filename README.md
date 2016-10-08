@@ -19,7 +19,7 @@
 
     ```elixir
     def deps do
-      [{:we_whisper, "~> 0.1.0"}]
+      [{:we_whisper, "~> 0.1.1"}]
     end
     ```
 
