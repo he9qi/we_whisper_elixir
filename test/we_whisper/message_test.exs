@@ -25,11 +25,15 @@ defmodule WeWhisper.MessageTest do
   end
 
   test "parses message" do
-    assert parse(@xml_message) == %Message{
+    assert {:ok, %Message{
       Encrypt: "xml_encrypted_message",
       MsgSignature: "signature",
       TimeStamp: "2016/10/10",
       Nonce: "nonce"
-    }
+    }} == parse(@xml_message)
+  end
+
+  test "parses invalid xml message" do
+    assert {:error, "failed to parse xml"} == parse("invalid_xml")
   end
 end
