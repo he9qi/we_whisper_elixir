@@ -10,12 +10,26 @@ defmodule WeWhisper.Message do
     Nonce: binary
   }
 
+  defstruct [:Encrypt, :MsgSignature, :TimeStamp, :Nonce]
+
+  @doc """
+  Parse xml to message
+  """
+  def parse(message) do
+    %__MODULE__{
+      Encrypt:      get_value_of_key(message, "Encrypt"),
+      MsgSignature: get_value_of_key(message, "MsgSignature"),
+      TimeStamp:    get_value_of_key(message, "TimeStamp"),
+      Nonce:        get_value_of_key(message, "Nonce")
+    }
+  end
+
   @doc """
   Convert message to xml.
   """
   @spec to_xml(binary, binary, binary, binary) :: binary
   def to_xml(encrypt, sign, timestamp, nonce) do
-    to_xml(%{
+    to_xml(%__MODULE__{
       Encrypt: encrypt,
       MsgSignature: sign,
       TimeStamp: timestamp,
@@ -27,7 +41,7 @@ defmodule WeWhisper.Message do
   Convert message hash to xml.
   """
   @spec to_xml(t) :: binary
-  def to_xml(%{
+  def to_xml(%__MODULE__{
     Encrypt: content,
     MsgSignature: signature,
     TimeStamp: timestamp,
@@ -42,29 +56,10 @@ defmodule WeWhisper.Message do
 """
   end
 
-  @doc """
-  Get encrypted content from message
-  """
-  @spec get_encrypted_content(t) :: binary
-  def get_encrypted_content(message) do
-    get_value_of_key(message, "Encrypt")
-  end
-
-  @doc """
-  Get signature content from message
-  """
-  @spec get_signature(t|binary) :: binary
-  def get_signature(message) do
-    get_value_of_key(message, "MsgSignature")
-  end
-
-  defp get_value_of_key(%{MsgSignature: signature}, "MsgSignature"), do: signature
-  defp get_value_of_key(%{Encrypt: content}, "Encrypt"), do: content
   defp get_value_of_key(xml, key) when is_binary(xml) do
     { xml, _rest } = :xmerl_scan.string(:erlang.bitstring_to_list(xml))
     [ element ] = :xmerl_xpath.string(to_char_list("/xml/#{key}"), xml)
     [ text ] = xmlElement(element, :content)
     xmlText(text, :value) |> to_string
   end
-
 end

@@ -26,7 +26,7 @@ defmodule WhisperTest do
   end
 
   test "decrypts message", %{whisper: whisper} do
-    {:ok, decrypted_message} = whisper |> decrypt_message(encrypted_message, nonce, timestamp)
+    {:ok, decrypted_message} = whisper |> decrypt_message(encrypted_message)
 
     assert decrypted_message == message
   end
@@ -37,5 +37,4 @@ defmodule WhisperTest do
       assert my_message == encrypted_message
     end
   end
-
 end
