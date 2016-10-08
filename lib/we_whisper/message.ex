@@ -17,17 +17,10 @@ defmodule WeWhisper.Message do
   @doc """
   Parse xml to message
   """
-  @spec parse(binary) :: {:ok, t} | {:error, Error.t}
-  def parse(message) do
+  @spec parse_encrypt_field(binary) :: {:ok, binary} | {:error, Error.t}
+  def parse_encrypt_field(message) do
     try do
-      {:ok,
-        %__MODULE__{
-          Encrypt:      get_value_of_key(message, "Encrypt"),
-          MsgSignature: get_value_of_key(message, "MsgSignature"),
-          TimeStamp:    get_value_of_key(message, "TimeStamp"),
-          Nonce:        get_value_of_key(message, "Nonce")
-        }
-      }
+      {:ok, get_value_of_key(message, "Encrypt")}
     rescue
       e in Error -> {:error, e}
     end
@@ -71,6 +64,8 @@ defmodule WeWhisper.Message do
       [ element ] = :xmerl_xpath.string(to_char_list("/xml/#{key}"), xml)
       [ text ] = xmlElement(element, :content)
       xmlText(text, :value) |> to_string
+    rescue
+      MatchError -> raise Error, reason: "failed get content from key in xml"
     catch
       :exit, _ -> raise Error, reason: "failed to parse xml"
     end
